@@ -20,12 +20,12 @@
   --color-forest: #142b27;
   --color-tab-bg: #465a57;
   --color-sage: #d5dddb;
-  --color-mint: #a5d4cb;
+  --color-mint: #D5DDDB;
   --color-field-bg: #f9f9f9;
   --color-field-border: #eee;
   --color-label-on-dark: #dbdbdb;
   --color-hint-on-dark: #ff9a8f;
-  --font-display: 'IvyOra Display', 'Fraunces', Georgia, serif;
+  --font-display: 'ivypresto-display', 'Fraunces', Georgia, serif;
   --font-body: 'DM Sans', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
 
   color-scheme: light;
@@ -43,6 +43,8 @@ img {
 a {
   text-decoration: none;
 }
+
+
 
 html,
 body {
