@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PhotoCarousel } from '../components/PhotoCarousel'
 import { ProgressHeader } from '../components/ProgressHeader'
@@ -53,11 +53,6 @@ export function Quiz() {
     }
     load()
   }, [])
-
-  const currentWeek = useMemo(
-    () => (plants.length ? Math.max(...plants.map((p) => p.week_added)) : 1),
-    [plants],
-  )
 
   function handleSubmit() {
     if (!current) return
@@ -122,7 +117,7 @@ export function Quiz() {
       <TabBar active="quiz" />
       <div className="screen-content">
         <ProgressHeader
-          week={currentWeek}
+          week={current.week_added}
           correct={sessionCorrect}
           total={sessionTotal}
           streak={streak}
