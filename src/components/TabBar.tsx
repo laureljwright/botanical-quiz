@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import logoutIcon from '../assets/figma/logout-icon.svg'
 
-export function TabBar({ active }: { active: 'quiz' | 'plants' }) {
+export function TabBar({ active }: { active: 'quiz' | 'plants' | 'study' }) {
   const navigate = useNavigate()
 
   async function handleSignOut() {
@@ -25,10 +25,13 @@ export function TabBar({ active }: { active: 'quiz' | 'plants' }) {
       </div>
       <div className="tab-bar-pills">
         <Link to="/quiz" className={`tab-pill ${active === 'quiz' ? 'active' : ''}`}>
-          Quiz Mode
+          Quiz
         </Link>
         <Link to="/plants" className={`tab-pill ${active === 'plants' ? 'active' : ''}`}>
-          + Add New Plants
+          + New Plants
+        </Link>
+        <Link to="/study" className={`tab-pill ${active === 'study' ? 'active' : ''}`}>
+          Study
         </Link>
       </div>
     </div>

@@ -33,7 +33,7 @@ export function Quiz() {
   const [answers, setAnswers] = useState<Answers>(emptyAnswers())
   const [statuses, setStatuses] = useState<Statuses>(emptyStatuses())
   const [graded, setGraded] = useState(false)
-  const [roundCorrect, setRoundCorrect] = useState(false)
+  const [showTip, setShowTip] = useState(false)
 
   const [sessionCorrect, setSessionCorrect] = useState(0)
   const [sessionTotal, setSessionTotal] = useState(0)
@@ -65,7 +65,6 @@ export function Quiz() {
     }
     setStatuses(nextStatuses)
     setGraded(true)
-    setRoundCorrect(allCorrect)
     setSessionTotal((t) => t + 1)
     setSessionCorrect((c) => c + (allCorrect ? 1 : 0))
     setStreak((s) => (allCorrect ? s + 1 : 0))
@@ -87,7 +86,7 @@ export function Quiz() {
     setAnswers(emptyAnswers())
     setStatuses(emptyStatuses())
     setGraded(false)
-    setRoundCorrect(false)
+    setShowTip(false)
   }
 
   if (loading) return <div className="page-dark screen-content">Loading…</div>
@@ -125,6 +124,19 @@ export function Quiz() {
 
         <PhotoCarousel photos={current.photo_urls} alt="Identify this plant" />
 
+        {current.fun_fact && (
+          <>
+            <button
+              type="button"
+              className="tip-toggle"
+              onClick={() => setShowTip((s) => !s)}
+            >
+              💡 {showTip ? 'Hide tip' : 'Show tip'}
+            </button>
+            {showTip && <div className="fun-fact">🌱 {current.fun_fact}</div>}
+          </>
+        )}
+
         {PLANT_FIELDS.map((field) => (
           <QuizAnswerField
             key={field}
@@ -141,10 +153,6 @@ export function Quiz() {
             }
           />
         ))}
-
-        {graded && roundCorrect && current.fun_fact && (
-          <div className="fun-fact">🌱 {current.fun_fact}</div>
-        )}
 
         {!graded ? (
           <div className="pill-row">

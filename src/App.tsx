@@ -3,6 +3,7 @@ import { Login } from './pages/Login'
 import { PlantForm } from './pages/PlantForm'
 import { PlantList } from './pages/PlantList'
 import { Quiz } from './pages/Quiz'
+import { Study } from './pages/Study'
 import { supabaseConfigured } from './lib/supabaseClient'
 import { useSession } from './lib/useSession'
 
@@ -80,6 +81,14 @@ export default function App() {
           element={
             <RequireAuth>
               <Quiz />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/study"
+          element={
+            <RequireAuth>
+              <Study />
             </RequireAuth>
           }
         />

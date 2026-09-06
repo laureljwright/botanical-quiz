@@ -231,7 +231,7 @@ textarea {
 .tab-pill {
   flex: 1;
   text-align: center;
-  padding: 10px 12px;
+  padding: 7px 8px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
@@ -239,6 +239,7 @@ textarea {
   text-decoration: none;
   font-family: var(--font-body);
   font-size: 14px;
+  white-space: nowrap;
 }
 
 .tab-pill.active {
@@ -583,4 +584,134 @@ textarea {
 .plant-card-trash img {
   width: 18px;
   height: 24px;
+}
+
+.study-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.study-filter-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.study-sort-select {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: #333;
+  cursor: pointer;
+}
+
+.study-filters {
+  display: flex;
+  gap: 16px;
+  margin-top: -12px;
+}
+
+.study-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.study-filter-field span {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-forest);
+}
+
+.study-filter-field select {
+  font-family: var(--font-body);
+  background: var(--color-field-bg);
+  border: 1px solid var(--color-field-border);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--color-forest);
+}
+
+.study-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.study-card-top {
+  display: flex;
+  gap: 16px;
+}
+
+.study-card-photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #ddd;
+  flex-shrink: 0;
+}
+
+.study-card-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.study-card-week {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-forest);
+}
+
+.study-card-name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--color-forest);
+}
+
+.study-card-common {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-forest);
+}
+
+.study-card-details {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-forest);
+}
+
+.tip-toggle {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-mint);
+  cursor: pointer;
 }
