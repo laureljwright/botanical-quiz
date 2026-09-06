@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { PhotoCarousel } from '../components/PhotoCarousel'
+import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
 import { fetchPlantsWithStats } from '../lib/plants'
 import { FIELD_LABELS } from '../lib/types'
@@ -17,6 +19,7 @@ export function Study() {
   const [weekFilter, setWeekFilter] = useState('all')
   const [familyFilter, setFamilyFilter] = useState('all')
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest')
+  const [activePlant, setActivePlant] = useState<PlantWithStats | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -116,10 +119,20 @@ export function Study() {
         {visiblePlants.map((plant) => (
           <div key={plant.id} className="study-card">
             <div className="study-card-top">
-              <img src={plant.photo_urls[0]} alt="" className="study-card-photo" />
+              <button
+                type="button"
+                className="study-card-photo-btn"
+                aria-label={`View photos of ${plant.botanical_name || 'this plant'}`}
+                onClick={() => setActivePlant(plant)}
+              >
+                <img src={plant.photo_urls[0]} alt="" className="study-card-photo" />
+              </button>
               <div className="study-card-heading">
                 <div className="study-card-week">Week {plant.week_added}</div>
-                <div className="study-card-name">{plant.botanical_name || 'Untitled'}</div>
+                <div className="study-card-name">
+                  {plant.botanical_name || 'Untitled'}
+                  <PronounceButton text={plant.botanical_name} />
+                </div>
                 <div className="study-card-common">{plant.common_name}</div>
               </div>
             </div>
@@ -127,12 +140,32 @@ export function Study() {
               {DETAIL_FIELDS.map((field) => (
                 <div key={field}>
                   {FIELD_LABELS[field]}: {plant[field]}
+                  {field === 'family_name' && <PronounceButton text={plant.family_name} />}
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
+
+      {activePlant && (
+        <div className="photo-modal-backdrop" onClick={() => setActivePlant(null)}>
+          <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="photo-modal-close"
+              aria-label="Close"
+              onClick={() => setActivePlant(null)}
+            >
+              ×
+            </button>
+            <PhotoCarousel
+              photos={activePlant.photo_urls}
+              alt={activePlant.botanical_name || 'Plant photo'}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
