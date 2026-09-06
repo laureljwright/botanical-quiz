@@ -24,14 +24,14 @@ export function TabBar({ active }: { active: 'quiz' | 'plants' | 'study' }) {
         </button>
       </div>
       <div className="tab-bar-pills">
+        <Link to="/study" className={`tab-pill ${active === 'study' ? 'active' : ''}`}>
+          Study
+        </Link>
         <Link to="/quiz" className={`tab-pill ${active === 'quiz' ? 'active' : ''}`}>
           Quiz
         </Link>
         <Link to="/plants" className={`tab-pill ${active === 'plants' ? 'active' : ''}`}>
           + New Plants
-        </Link>
-        <Link to="/study" className={`tab-pill ${active === 'study' ? 'active' : ''}`}>
-          Study
         </Link>
       </div>
     </div>
