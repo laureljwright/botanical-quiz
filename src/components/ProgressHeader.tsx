@@ -1,18 +1,18 @@
 export function ProgressHeader({
   week,
-  correct,
-  total,
+  points,
+  possiblePoints,
   streak,
 }: {
   week: number
-  correct: number
-  total: number
+  points: number
+  possiblePoints: number
   streak: number
 }) {
   return (
     <div className="week-header-block">
       <div className="week-header">
-        Week {week} | {correct}/{total}
+        Week {week} | {points}/{possiblePoints}
       </div>
       {streak > 0 && <div className="streak-line">🔥 {streak} in a row</div>}
     </div>

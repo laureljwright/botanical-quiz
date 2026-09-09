@@ -34,7 +34,7 @@ export function Quiz() {
   const [roundScore, setRoundScore] = useState<number | null>(null)
   const [showTip, setShowTip] = useState(false)
 
-  const [sessionCorrect, setSessionCorrect] = useState(0)
+  const [sessionPoints, setSessionPoints] = useState(0)
   const [sessionTotal, setSessionTotal] = useState(0)
   const [streak, setStreak] = useState(0)
 
@@ -72,7 +72,7 @@ export function Quiz() {
     setGraded(true)
     setRoundScore(points)
     setSessionTotal((t) => t + 1)
-    setSessionCorrect((c) => c + (allCorrect ? 1 : 0))
+    setSessionPoints((p) => p + points)
     setStreak((s) => (allCorrect ? s + 1 : 0))
     recordQuizResult(current.id, allCorrect).catch(() => {
       /* stats update failing shouldn't block studying */
@@ -121,8 +121,8 @@ export function Quiz() {
       <div className="screen-content">
         <ProgressHeader
           week={current.week_added}
-          correct={sessionCorrect}
-          total={sessionTotal}
+          points={sessionPoints}
+          possiblePoints={sessionTotal * TOTAL_QUIZ_POINTS}
           streak={streak}
         />
 
