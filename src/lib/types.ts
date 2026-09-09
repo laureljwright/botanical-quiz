@@ -47,3 +47,16 @@ export const FIELD_LABELS: Record<PlantField, string> = {
   light: 'Light',
   water: 'Water',
 }
+
+/** Points awarded per correct field when grading a quiz round. */
+export const FIELD_POINTS: Record<PlantField, number> = {
+  botanical_name: 4,
+  common_name: 1,
+  type: 1,
+  origin: 1,
+  family_name: 1,
+  light: 1,
+  water: 1,
+}
+
+export const TOTAL_QUIZ_POINTS = PLANT_FIELDS.reduce((sum, f) => sum + FIELD_POINTS[f], 0)

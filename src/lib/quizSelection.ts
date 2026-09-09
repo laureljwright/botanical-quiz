@@ -1,22 +1,33 @@
 import type { PlantWithStats } from './types'
 
+export interface QuizPick {
+  plant: PlantWithStats
+  /** Plant ids not yet shown in the current cycle, after this pick. Pass back in next call. */
+  remainingIds: string[]
+}
+
 /**
- * Weighted pick for the next quiz round: plants with lower accuracy and
- * plants added most recently are favored, but every plant keeps a nonzero
- * chance so nothing drops out of rotation. Excludes recently-asked plants
- * when the pool is large enough to do so.
+ * Picks the next quiz plant from a "cycle bag": every plant is guaranteed to
+ * be shown exactly once before any plant repeats. `remainingIds` tracks which
+ * plants are still left in the current cycle — when it runs out (or doesn't
+ * match the current plant list), a fresh cycle starts with every plant.
+ *
+ * Within a cycle, the plant is chosen with a weighted random pick so plants
+ * with lower accuracy and plants added most recently are more likely to come
+ * up earlier — but weighting only affects order, never whether a plant shows
+ * up, so nothing gets left out.
  */
-export function pickNextPlant(
-  plants: PlantWithStats[],
-  recentIds: string[],
-): PlantWithStats | null {
+export function pickNextPlant(plants: PlantWithStats[], remainingIds: string[]): QuizPick | null {
   if (plants.length === 0) return null
 
+  const validIds = new Set(plants.map((p) => p.id))
+  let cycleIds = remainingIds.filter((id) => validIds.has(id))
+  if (cycleIds.length === 0) {
+    cycleIds = plants.map((p) => p.id)
+  }
+
+  const pool = plants.filter((p) => cycleIds.includes(p.id))
   const maxWeek = Math.max(...plants.map((p) => p.week_added))
-  const pool =
-    plants.length > recentIds.length
-      ? plants.filter((p) => !recentIds.includes(p.id))
-      : plants
 
   const weighted = pool.map((plant) => {
     const seen = plant.stats?.times_seen ?? 0
@@ -30,9 +41,17 @@ export function pickNextPlant(
 
   const totalWeight = weighted.reduce((sum, w) => sum + w.weight, 0)
   let r = Math.random() * totalWeight
+  let picked = weighted[weighted.length - 1].plant
   for (const w of weighted) {
     r -= w.weight
-    if (r <= 0) return w.plant
+    if (r <= 0) {
+      picked = w.plant
+      break
+    }
   }
-  return weighted[weighted.length - 1].plant
+
+  return {
+    plant: picked,
+    remainingIds: cycleIds.filter((id) => id !== picked.id),
+  }
 }

@@ -758,3 +758,11 @@ textarea {
   padding: 8px;
   cursor: pointer;
 }
+
+.round-score {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+}

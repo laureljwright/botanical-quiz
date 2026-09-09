@@ -7,10 +7,8 @@ import { TabBar } from '../components/TabBar'
 import { isCorrectAnswer } from '../lib/match'
 import { fetchPlantsWithStats, recordQuizResult } from '../lib/plants'
 import { pickNextPlant } from '../lib/quizSelection'
-import { FIELD_LABELS, PLANT_FIELDS } from '../lib/types'
+import { FIELD_LABELS, FIELD_POINTS, PLANT_FIELDS, TOTAL_QUIZ_POINTS } from '../lib/types'
 import type { PlantField, PlantWithStats } from '../lib/types'
-
-const RECENT_HISTORY = 4
 
 type Answers = Record<PlantField, string>
 type Statuses = Record<PlantField, FieldStatus>
@@ -29,10 +27,11 @@ export function Quiz() {
   const [error, setError] = useState<string | null>(null)
 
   const [current, setCurrent] = useState<PlantWithStats | null>(null)
-  const [recentIds, setRecentIds] = useState<string[]>([])
+  const [remainingIds, setRemainingIds] = useState<string[]>([])
   const [answers, setAnswers] = useState<Answers>(emptyAnswers())
   const [statuses, setStatuses] = useState<Statuses>(emptyStatuses())
   const [graded, setGraded] = useState(false)
+  const [roundScore, setRoundScore] = useState<number | null>(null)
   const [showTip, setShowTip] = useState(false)
 
   const [sessionCorrect, setSessionCorrect] = useState(0)
@@ -44,7 +43,11 @@ export function Quiz() {
       try {
         const data = await fetchPlantsWithStats()
         setPlants(data)
-        setCurrent(pickNextPlant(data, []))
+        const pick = pickNextPlant(data, [])
+        if (pick) {
+          setCurrent(pick.plant)
+          setRemainingIds(pick.remainingIds)
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err))
       } finally {
@@ -58,13 +61,16 @@ export function Quiz() {
     if (!current) return
     const nextStatuses = emptyStatuses()
     let allCorrect = true
+    let points = 0
     for (const field of PLANT_FIELDS) {
       const ok = isCorrectAnswer(answers[field], current[field])
       nextStatuses[field] = ok ? 'correct' : 'incorrect'
-      if (!ok) allCorrect = false
+      if (ok) points += FIELD_POINTS[field]
+      else allCorrect = false
     }
     setStatuses(nextStatuses)
     setGraded(true)
+    setRoundScore(points)
     setSessionTotal((t) => t + 1)
     setSessionCorrect((c) => c + (allCorrect ? 1 : 0))
     setStreak((s) => (allCorrect ? s + 1 : 0))
@@ -73,19 +79,17 @@ export function Quiz() {
     })
   }
 
-  function handleReset() {
-    setAnswers(emptyAnswers())
-    setStatuses(emptyStatuses())
-  }
-
   function handleNext() {
     if (!current) return
-    const nextRecent = [current.id, ...recentIds].slice(0, RECENT_HISTORY)
-    setRecentIds(nextRecent)
-    setCurrent(pickNextPlant(plants, nextRecent))
+    const pick = pickNextPlant(plants, remainingIds)
+    if (pick) {
+      setCurrent(pick.plant)
+      setRemainingIds(pick.remainingIds)
+    }
     setAnswers(emptyAnswers())
     setStatuses(emptyStatuses())
     setGraded(false)
+    setRoundScore(null)
     setShowTip(false)
   }
 
@@ -154,10 +158,16 @@ export function Quiz() {
           />
         ))}
 
+        {graded && roundScore !== null && (
+          <div className="round-score">
+            Score: {roundScore}/{TOTAL_QUIZ_POINTS}
+          </div>
+        )}
+
         {!graded ? (
           <div className="pill-row">
-            <button type="button" className="btn-pill btn-pill-outline-mint" onClick={handleReset}>
-              Reset
+            <button type="button" className="btn-pill btn-pill-outline-mint" onClick={handleNext}>
+              Skip
             </button>
             <button type="button" className="btn-pill btn-pill-mint" onClick={handleSubmit}>
               Next
