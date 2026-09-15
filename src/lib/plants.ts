@@ -63,10 +63,37 @@ export async function deletePlant(id: string): Promise<void> {
   if (error) throw error
 }
 
+/**
+ * iPhones default to saving photos as HEIC/HEIF, which most browsers (and
+ * `<img>` tags) can't decode — an uploaded HEIC photo would silently fail to
+ * render anywhere but Safari. Convert it to a normal JPEG before upload so
+ * every plant photo actually displays for the quiz.
+ */
+async function convertHeicIfNeeded(file: File): Promise<File> {
+  const looksHeic =
+    file.type === 'image/heic' ||
+    file.type === 'image/heif' ||
+    /\.(heic|heif)$/i.test(file.name)
+  if (!looksHeic) return file
+
+  try {
+    const { default: heic2any } = await import('heic2any')
+    const result = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 })
+    const blob = Array.isArray(result) ? result[0] : result
+    const newName = file.name.replace(/\.(heic|heif)$/i, '') + '.jpg'
+    return new File([blob], newName, { type: 'image/jpeg' })
+  } catch {
+    // If conversion fails for any reason, upload the original rather than
+    // blocking the whole flow — better a possibly-broken photo than none.
+    return file
+  }
+}
+
 export async function uploadPlantPhoto(file: File): Promise<string> {
-  const ext = file.name.split('.').pop() || 'jpg'
+  const uploadFile = await convertHeicIfNeeded(file)
+  const ext = uploadFile.name.split('.').pop() || 'jpg'
   const path = `${crypto.randomUUID()}.${ext}`
-  const { error } = await supabase.storage.from(PHOTO_BUCKET).upload(path, file)
+  const { error } = await supabase.storage.from(PHOTO_BUCKET).upload(path, uploadFile)
   if (error) throw error
   const { data } = supabase.storage.from(PHOTO_BUCKET).getPublicUrl(path)
   return data.publicUrl

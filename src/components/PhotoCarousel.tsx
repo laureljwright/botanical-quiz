@@ -3,6 +3,7 @@ import arrowIcon from '../assets/figma/carousel-arrow.svg'
 
 export function PhotoCarousel({ photos, alt }: { photos: string[]; alt: string }) {
   const [index, setIndex] = useState(0)
+  const [failed, setFailed] = useState<Record<number, boolean>>({})
 
   if (photos.length === 0) {
     return (
@@ -23,10 +24,19 @@ export function PhotoCarousel({ photos, alt }: { photos: string[]; alt: string }
   }
 
   const showControls = photos.length > 1
+  const currentFailed = failed[index]
 
   return (
     <div className="carousel">
-      <img src={photos[index]} alt={alt} />
+      {currentFailed ? (
+        <div className="carousel-error">Photo couldn't load</div>
+      ) : (
+        <img
+          src={photos[index]}
+          alt={alt}
+          onError={() => setFailed((f) => ({ ...f, [index]: true }))}
+        />
+      )}
       {showControls && (
         <div className="carousel-controls">
           <button

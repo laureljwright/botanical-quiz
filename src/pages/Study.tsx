@@ -125,7 +125,14 @@ export function Study() {
                 aria-label={`View photos of ${plant.botanical_name || 'this plant'}`}
                 onClick={() => setActivePlant(plant)}
               >
-                <img src={plant.photo_urls[0]} alt="" className="study-card-photo" />
+                <img
+                  src={plant.photo_urls[0]}
+                  alt=""
+                  className="study-card-photo"
+                  onError={(e) => {
+                    e.currentTarget.style.visibility = 'hidden'
+                  }}
+                />
               </button>
               <div className="study-card-heading">
                 <div className="study-card-week">Week {plant.week_added}</div>

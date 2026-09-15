@@ -56,7 +56,14 @@ export function PlantList() {
               to={`/plants/${plant.id}/edit`}
               style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}
             >
-              <img src={plant.photo_urls[0]} alt="" className="plant-card-photo" />
+              <img
+                src={plant.photo_urls[0]}
+                alt=""
+                className="plant-card-photo"
+                onError={(e) => {
+                  e.currentTarget.style.visibility = 'hidden'
+                }}
+              />
               <div className="plant-card-info">
                 <div className="plant-card-name">{plant.botanical_name || 'Untitled'}</div>
                 <div className="plant-card-meta">{plant.common_name}</div>

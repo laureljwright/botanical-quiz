@@ -134,6 +134,9 @@ export function PlantForm() {
                     src={url}
                     alt=""
                     onClick={() => removePhoto(i)}
+                    onError={(e) => {
+                      e.currentTarget.style.visibility = 'hidden'
+                    }}
                     style={{ cursor: 'pointer' }}
                   />
                 ))}
