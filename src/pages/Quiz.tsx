@@ -91,6 +91,7 @@ export function Quiz() {
     setGraded(false)
     setRoundScore(null)
     setShowTip(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   if (loading) return <div className="page-dark screen-content">Loading…</div>
