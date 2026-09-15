@@ -129,16 +129,23 @@ export function PlantForm() {
             {plant.photo_urls.length > 0 && (
               <div className="uploader-thumbs">
                 {plant.photo_urls.map((url, i) => (
-                  <img
-                    key={url}
-                    src={url}
-                    alt=""
-                    onClick={() => removePhoto(i)}
-                    onError={(e) => {
-                      e.currentTarget.style.visibility = 'hidden'
-                    }}
-                    style={{ cursor: 'pointer' }}
-                  />
+                  <div className="uploader-thumb" key={url}>
+                    <img
+                      src={url}
+                      alt=""
+                      onError={(e) => {
+                        e.currentTarget.style.visibility = 'hidden'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="uploader-thumb-remove"
+                      aria-label="Remove photo"
+                      onClick={() => removePhoto(i)}
+                    >
+                      ×
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

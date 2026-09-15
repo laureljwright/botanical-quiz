@@ -477,11 +477,37 @@ textarea {
   flex-wrap: wrap;
 }
 
-.uploader-thumbs img {
+.uploader-thumb {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.uploader-thumb img {
   width: 56px;
   height: 56px;
   object-fit: cover;
   border-radius: 6px;
+}
+
+.uploader-thumb-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-forest);
+  color: #fff;
+  border: 2px solid var(--color-field-bg);
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
 }
 
 .back-link {
