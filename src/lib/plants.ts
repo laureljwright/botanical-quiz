@@ -89,8 +89,58 @@ async function convertHeicIfNeeded(file: File): Promise<File> {
   }
 }
 
+const MAX_PHOTO_DIMENSION = 1600
+const PHOTO_JPEG_QUALITY = 0.82
+
+/**
+ * Phone cameras routinely produce multi-megabyte, 12MP+ photos. Uploaded
+ * as-is, those are slow (and on a weak connection, unreliable) to load back
+ * in the quiz — which is what "sometimes an image doesn't load" usually
+ * turns out to be. Downscale and recompress to a size that's still plenty
+ * sharp on a phone screen but loads fast and consistently.
+ */
+async function resizeImage(file: File): Promise<File> {
+  try {
+    const objectUrl = URL.createObjectURL(file)
+    try {
+      const img = new Image()
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject(new Error('Could not read image'))
+        img.src = objectUrl
+      })
+
+      const { width, height } = img
+      const scale = Math.min(1, MAX_PHOTO_DIMENSION / Math.max(width, height))
+      if (scale === 1 && file.type === 'image/jpeg') return file
+
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(1, Math.round(width * scale))
+      canvas.height = Math.max(1, Math.round(height * scale))
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return file
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, 'image/jpeg', PHOTO_JPEG_QUALITY),
+      )
+      if (!blob) return file
+
+      const newName = file.name.replace(/\.\w+$/, '') + '.jpg'
+      return new File([blob], newName, { type: 'image/jpeg' })
+    } finally {
+      URL.revokeObjectURL(objectUrl)
+    }
+  } catch {
+    // If anything goes wrong reading/redrawing the image, fall back to the
+    // original file rather than blocking the upload.
+    return file
+  }
+}
+
 export async function uploadPlantPhoto(file: File): Promise<string> {
-  const uploadFile = await convertHeicIfNeeded(file)
+  const heicHandled = await convertHeicIfNeeded(file)
+  const uploadFile = await resizeImage(heicHandled)
   const ext = uploadFile.name.split('.').pop() || 'jpg'
   const path = `${crypto.randomUUID()}.${ext}`
   const { error } = await supabase.storage.from(PHOTO_BUCKET).upload(path, uploadFile)

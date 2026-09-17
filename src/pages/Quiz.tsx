@@ -91,7 +91,11 @@ export function Quiz() {
     setGraded(false)
     setRoundScore(null)
     setShowTip(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    // Instant, not smooth: a smooth scroll can get interrupted by the layout
+    // shift as the new photo loads in, leaving the page stuck mid-scroll.
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
   }
 
   if (loading) return <div className="page-dark screen-content">Loading…</div>
