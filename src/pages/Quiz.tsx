@@ -21,6 +21,10 @@ function emptyStatuses(): Statuses {
   return Object.fromEntries(PLANT_FIELDS.map((f) => [f, 'idle'])) as Statuses
 }
 
+function plantsForWeek(plants: PlantWithStats[], week: string): PlantWithStats[] {
+  return week === 'all' ? plants : plants.filter((p) => String(p.week_added) === week)
+}
+
 export function Quiz() {
   const [plants, setPlants] = useState<PlantWithStats[]>([])
   const [loading, setLoading] = useState(true)
@@ -33,6 +37,7 @@ export function Quiz() {
   const [graded, setGraded] = useState(false)
   const [roundScore, setRoundScore] = useState<number | null>(null)
   const [showTip, setShowTip] = useState(false)
+  const [weekFilter, setWeekFilter] = useState('all')
 
   const [sessionPoints, setSessionPoints] = useState(0)
   const [sessionTotal, setSessionTotal] = useState(0)
@@ -57,6 +62,9 @@ export function Quiz() {
     load()
   }, [])
 
+  const quizPlants = plantsForWeek(plants, weekFilter)
+  const weeks = Array.from(new Set(plants.map((p) => p.week_added))).sort((a, b) => a - b)
+
   function handleSubmit() {
     if (!current) return
     const nextStatuses = emptyStatuses()
@@ -79,9 +87,8 @@ export function Quiz() {
     })
   }
 
-  function handleNext() {
-    if (!current) return
-    const pick = pickNextPlant(plants, remainingIds)
+  function startRound(pool: PlantWithStats[], remaining: string[]) {
+    const pick = pickNextPlant(pool, remaining)
     if (pick) {
       setCurrent(pick.plant)
       setRemainingIds(pick.remainingIds)
@@ -96,6 +103,17 @@ export function Quiz() {
     window.scrollTo(0, 0)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
+  }
+
+  function handleNext() {
+    if (!current) return
+    startRound(quizPlants, remainingIds)
+  }
+
+  function handleWeekChange(value: string) {
+    setWeekFilter(value)
+    // New pool means a fresh cycle, so every plant in that week gets shown.
+    startRound(plantsForWeek(plants, value), [])
   }
 
   if (loading) return <div className="page-dark screen-content">Loading…</div>
@@ -124,12 +142,29 @@ export function Quiz() {
     <div className="page-dark">
       <TabBar active="quiz" />
       <div className="screen-content">
-        <ProgressHeader
-          week={current.week_added}
-          points={sessionPoints}
-          possiblePoints={sessionTotal * TOTAL_QUIZ_POINTS}
-          streak={streak}
-        />
+        <div className="quiz-top-row">
+          <ProgressHeader
+            week={current.week_added}
+            points={sessionPoints}
+            possiblePoints={sessionTotal * TOTAL_QUIZ_POINTS}
+            streak={streak}
+          />
+          {weeks.length > 1 && (
+            <select
+              className="quiz-week-select"
+              value={weekFilter}
+              onChange={(e) => handleWeekChange(e.target.value)}
+              aria-label="Quiz on week"
+            >
+              <option value="all">All weeks</option>
+              {weeks.map((w) => (
+                <option key={w} value={String(w)}>
+                  Week {w}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
 
         <PhotoCarousel photos={current.photo_urls} alt="Identify this plant" />
 

@@ -804,3 +804,23 @@ textarea {
   color: #fff;
   text-align: center;
 }
+
+.quiz-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.quiz-week-select {
+  font-family: var(--font-body);
+  font-size: 12px;
+  background: var(--color-field-bg);
+  color: var(--color-forest);
+  border: 1px solid var(--color-field-border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
