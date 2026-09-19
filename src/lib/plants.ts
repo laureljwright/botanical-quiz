@@ -1,5 +1,6 @@
 import { supabase, PHOTO_BUCKET } from './supabaseClient'
-import type { NewPlant, Plant, PlantWithStats, QuizStats } from './types'
+import { CHOICE_FIELDS, distinctFieldValues } from './fieldOptions'
+import type { NewPlant, Plant, PlantField, PlantWithStats, QuizStats } from './types'
 
 export async function fetchPlantsWithStats(): Promise<PlantWithStats[]> {
   const { data: plants, error: plantsError } = await supabase
@@ -22,6 +23,14 @@ export async function fetchPlantsWithStats(): Promise<PlantWithStats[]> {
     ...plant,
     stats: statsByPlantId.get(plant.id) ?? null,
   }))
+}
+
+/** Existing light/water values across all plants, for the dropdown choices. */
+export async function fetchChoiceOptions(): Promise<Partial<Record<PlantField, string[]>>> {
+  const { data, error } = await supabase.from('plants').select(CHOICE_FIELDS.join(','))
+  if (error) throw error
+  const rows = (data ?? []) as unknown as Partial<Record<PlantField, string>>[]
+  return Object.fromEntries(CHOICE_FIELDS.map((f) => [f, distinctFieldValues(rows, f)]))
 }
 
 export async function fetchPlant(id: string): Promise<Plant | null> {

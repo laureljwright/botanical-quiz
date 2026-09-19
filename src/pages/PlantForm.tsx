@@ -1,18 +1,21 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ChoiceInput } from '../components/ChoiceInput'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
 import uploadIcon from '../assets/figma/upload-icon.svg'
 import backArrow from '../assets/figma/back-arrow.svg'
+import { isChoiceField } from '../lib/fieldOptions'
 import {
   createPlant,
+  fetchChoiceOptions,
   fetchPlant,
   getNextWeekNumber,
   updatePlant,
   uploadPlantPhoto,
 } from '../lib/plants'
 import { FIELD_LABELS, PLANT_FIELDS } from '../lib/types'
-import type { NewPlant } from '../lib/types'
+import type { NewPlant, PlantField } from '../lib/types'
 
 const emptyPlant: NewPlant = {
   botanical_name: '',
@@ -37,6 +40,15 @@ export function PlantForm() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(isEdit)
+  const [choiceOptions, setChoiceOptions] = useState<Partial<Record<PlantField, string[]>>>({})
+
+  useEffect(() => {
+    fetchChoiceOptions()
+      .then(setChoiceOptions)
+      .catch(() => {
+        /* dropdowns just fall back to typing */
+      })
+  }, [])
 
   useEffect(() => {
     async function load() {
@@ -159,16 +171,26 @@ export function PlantForm() {
                   <PronounceButton text={plant[fieldKey]} />
                 )}
               </label>
-              <input
-                id={fieldKey}
-                type="text"
-                value={plant[fieldKey]}
-                onChange={(e) => setField(fieldKey, e.target.value)}
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck={false}
-                required
-              />
+              {isChoiceField(fieldKey) ? (
+                <ChoiceInput
+                  id={fieldKey}
+                  value={plant[fieldKey]}
+                  onChange={(value) => setField(fieldKey, value)}
+                  options={choiceOptions[fieldKey] ?? []}
+                  required
+                />
+              ) : (
+                <input
+                  id={fieldKey}
+                  type="text"
+                  value={plant[fieldKey]}
+                  onChange={(e) => setField(fieldKey, e.target.value)}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  required
+                />
+              )}
             </div>
           ))}
 

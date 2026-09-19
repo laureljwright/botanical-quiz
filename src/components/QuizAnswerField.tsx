@@ -10,6 +10,7 @@ export function QuizAnswerField({
   correctValue,
   pronounceText,
   disabled,
+  options,
 }: {
   label: string
   value: string
@@ -19,6 +20,8 @@ export function QuizAnswerField({
   /** Only pass once graded, so pronunciation can't be used to guess spelling beforehand. */
   pronounceText?: string
   disabled?: boolean
+  /** When given, the answer is picked from this list instead of typed. */
+  options?: string[]
 }) {
   return (
     <div className="field-row">
@@ -26,16 +29,32 @@ export function QuizAnswerField({
         {label}
         {pronounceText && <PronounceButton text={pronounceText} />}
       </label>
-      <input
-        type="text"
-        className={status !== 'idle' ? status : ''}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        autoCapitalize="off"
-        autoCorrect="off"
-        spellCheck={false}
-      />
+      {options ? (
+        <select
+          className={status !== 'idle' ? status : ''}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+        >
+          <option value="">Select…</option>
+          {options.map((o) => (
+            <option key={o} value={o}>
+              {o}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          className={status !== 'idle' ? status : ''}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+        />
+      )}
       {status === 'incorrect' && correctValue && (
         <div className="field-hint">Correct: {correctValue}</div>
       )}
