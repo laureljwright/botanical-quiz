@@ -5,7 +5,7 @@ import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
 import uploadIcon from '../assets/figma/upload-icon.svg'
 import backArrow from '../assets/figma/back-arrow.svg'
-import { isChoiceField } from '../lib/fieldOptions'
+import { capitalizeFirst, isCapitalizedField, isChoiceField } from '../lib/fieldOptions'
 import {
   createPlant,
   fetchChoiceOptions,
@@ -184,8 +184,13 @@ export function PlantForm() {
                   id={fieldKey}
                   type="text"
                   value={plant[fieldKey]}
-                  onChange={(e) => setField(fieldKey, e.target.value)}
-                  autoCapitalize="off"
+                  onChange={(e) =>
+                    setField(
+                      fieldKey,
+                      isCapitalizedField(fieldKey) ? capitalizeFirst(e.target.value) : e.target.value,
+                    )
+                  }
+                  autoCapitalize={isCapitalizedField(fieldKey) ? 'sentences' : 'off'}
                   autoCorrect="off"
                   spellCheck={false}
                   required

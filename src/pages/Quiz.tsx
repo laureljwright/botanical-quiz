@@ -6,7 +6,7 @@ import { QuizAnswerField, type FieldStatus } from '../components/QuizAnswerField
 import { TabBar } from '../components/TabBar'
 import { isCorrectAnswer } from '../lib/match'
 import { fetchPlantsWithStats, recordQuizResult } from '../lib/plants'
-import { distinctFieldValues, isChoiceField } from '../lib/fieldOptions'
+import { distinctFieldValues, isCapitalizedField, isChoiceField } from '../lib/fieldOptions'
 import { pickNextPlant } from '../lib/quizSelection'
 import { FIELD_LABELS, FIELD_POINTS, PLANT_FIELDS, TOTAL_QUIZ_POINTS } from '../lib/types'
 import type { PlantField, PlantWithStats } from '../lib/types'
@@ -197,6 +197,7 @@ export function Quiz() {
             correctValue={current[field]}
             disabled={graded}
             options={choiceOptions[field]}
+            capitalize={isCapitalizedField(field)}
             pronounceText={
               graded && (field === 'botanical_name' || field === 'family_name')
                 ? current[field]

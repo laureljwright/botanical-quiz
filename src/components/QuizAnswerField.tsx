@@ -11,6 +11,7 @@ export function QuizAnswerField({
   pronounceText,
   disabled,
   options,
+  capitalize,
 }: {
   label: string
   value: string
@@ -22,6 +23,8 @@ export function QuizAnswerField({
   disabled?: boolean
   /** When given, the answer is picked from this list instead of typed. */
   options?: string[]
+  /** Ask the mobile keyboard to start with a capital letter. */
+  capitalize?: boolean
 }) {
   return (
     <div className="field-row">
@@ -50,7 +53,7 @@ export function QuizAnswerField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          autoCapitalize="off"
+          autoCapitalize={capitalize ? 'sentences' : 'off'}
           autoCorrect="off"
           spellCheck={false}
         />

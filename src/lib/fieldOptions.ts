@@ -4,6 +4,17 @@ import type { PlantField } from './types'
 /** Fields answered by picking from a list instead of typing. */
 export const CHOICE_FIELDS: readonly PlantField[] = ['light', 'water']
 
+/** Fields whose value always starts with a capital letter (Genus, Family). */
+export const CAPITALIZED_FIELDS: readonly PlantField[] = ['botanical_name', 'family_name']
+
+export function isCapitalizedField(field: PlantField): boolean {
+  return CAPITALIZED_FIELDS.includes(field)
+}
+
+export function capitalizeFirst(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
 export function isChoiceField(field: PlantField): boolean {
   return CHOICE_FIELDS.includes(field)
 }
