@@ -878,3 +878,7 @@ textarea {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.field-row input.uppercase {
+  text-transform: uppercase;
+}

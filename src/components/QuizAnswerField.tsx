@@ -1,3 +1,4 @@
+import { autoCapitalizeFor, type TextCase } from '../lib/fieldOptions'
 import { PronounceButton } from './PronounceButton'
 
 export type FieldStatus = 'idle' | 'correct' | 'incorrect'
@@ -11,7 +12,7 @@ export function QuizAnswerField({
   pronounceText,
   disabled,
   options,
-  capitalize,
+  textCase,
 }: {
   label: string
   value: string
@@ -23,8 +24,8 @@ export function QuizAnswerField({
   disabled?: boolean
   /** When given, the answer is picked from this list instead of typed. */
   options?: string[]
-  /** Ask the mobile keyboard to start with a capital letter. */
-  capitalize?: boolean
+  /** Capitalization convention, so the mobile keyboard starts in the right mode. */
+  textCase?: TextCase
 }) {
   return (
     <div className="field-row">
@@ -49,11 +50,13 @@ export function QuizAnswerField({
       ) : (
         <input
           type="text"
-          className={status !== 'idle' ? status : ''}
+          className={[status !== 'idle' ? status : '', textCase === 'upper' ? 'uppercase' : '']
+            .filter(Boolean)
+            .join(' ')}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          autoCapitalize={capitalize ? 'sentences' : 'off'}
+          autoCapitalize={autoCapitalizeFor(textCase)}
           autoCorrect="off"
           spellCheck={false}
         />

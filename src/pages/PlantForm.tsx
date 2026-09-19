@@ -5,7 +5,7 @@ import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
 import uploadIcon from '../assets/figma/upload-icon.svg'
 import backArrow from '../assets/figma/back-arrow.svg'
-import { capitalizeFirst, isCapitalizedField, isChoiceField } from '../lib/fieldOptions'
+import { applyTextCase, autoCapitalizeFor, fieldTextCase, isChoiceField } from '../lib/fieldOptions'
 import {
   createPlant,
   fetchChoiceOptions,
@@ -94,10 +94,14 @@ export function PlantForm() {
     setSaving(true)
     setError(null)
     try {
+      const cleaned = { ...plant }
+      for (const f of PLANT_FIELDS) {
+        cleaned[f] = applyTextCase(cleaned[f], fieldTextCase(f))
+      }
       if (id) {
-        await updatePlant(id, plant)
+        await updatePlant(id, cleaned)
       } else {
-        await createPlant(plant)
+        await createPlant(cleaned)
       }
       navigate('/plants')
     } catch (err) {
@@ -184,13 +188,19 @@ export function PlantForm() {
                   id={fieldKey}
                   type="text"
                   value={plant[fieldKey]}
+                  className={fieldTextCase(fieldKey) === 'upper' ? 'uppercase' : undefined}
                   onChange={(e) =>
+                    // First-letter caps is applied live; all-caps is shown via CSS and
+                    // applied on save, since rewriting the whole value mid-edit would
+                    // shove the cursor to the end.
                     setField(
                       fieldKey,
-                      isCapitalizedField(fieldKey) ? capitalizeFirst(e.target.value) : e.target.value,
+                      fieldTextCase(fieldKey) === 'first'
+                        ? applyTextCase(e.target.value, 'first')
+                        : e.target.value,
                     )
                   }
-                  autoCapitalize={isCapitalizedField(fieldKey) ? 'sentences' : 'off'}
+                  autoCapitalize={autoCapitalizeFor(fieldTextCase(fieldKey))}
                   autoCorrect="off"
                   spellCheck={false}
                   required

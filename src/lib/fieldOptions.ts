@@ -4,15 +4,33 @@ import type { PlantField } from './types'
 /** Fields answered by picking from a list instead of typing. */
 export const CHOICE_FIELDS: readonly PlantField[] = ['light', 'water']
 
-/** Fields whose value always starts with a capital letter (Genus, Family). */
-export const CAPITALIZED_FIELDS: readonly PlantField[] = ['botanical_name', 'family_name']
+export type TextCase = 'first' | 'upper'
 
-export function isCapitalizedField(field: PlantField): boolean {
-  return CAPITALIZED_FIELDS.includes(field)
+/**
+ * Fields with a fixed capitalization convention: Botanical/Family Name start
+ * with a capital (Genus, Family); Type is always all caps (e.g. "BLE S/T").
+ */
+const TEXT_CASE: Partial<Record<PlantField, TextCase>> = {
+  botanical_name: 'first',
+  family_name: 'first',
+  type: 'upper',
 }
 
-export function capitalizeFirst(value: string): string {
-  return value.charAt(0).toUpperCase() + value.slice(1)
+export function fieldTextCase(field: PlantField): TextCase | undefined {
+  return TEXT_CASE[field]
+}
+
+export function applyTextCase(value: string, textCase?: TextCase): string {
+  if (textCase === 'upper') return value.toUpperCase()
+  if (textCase === 'first') return value.charAt(0).toUpperCase() + value.slice(1)
+  return value
+}
+
+/** What to tell the mobile keyboard so it starts in the right mode. */
+export function autoCapitalizeFor(textCase?: TextCase): 'sentences' | 'characters' | 'off' {
+  if (textCase === 'upper') return 'characters'
+  if (textCase === 'first') return 'sentences'
+  return 'off'
 }
 
 export function isChoiceField(field: PlantField): boolean {
