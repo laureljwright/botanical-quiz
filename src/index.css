@@ -820,7 +820,12 @@ textarea {
   color: var(--color-forest);
   border: 1px solid var(--color-field-border);
   border-radius: 20px;
-  padding: 6px 12px;
+  padding: 6px 32px 6px 14px;
   flex-shrink: 0;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23142b27' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
 }
