@@ -7,12 +7,14 @@ export const CHOICE_FIELDS: readonly PlantField[] = ['light', 'water']
 export type TextCase = 'first' | 'upper'
 
 /**
- * Fields with a fixed capitalization convention: Botanical/Family Name start
- * with a capital (Genus, Family); Type is always all caps (e.g. "BLE S/T").
+ * Fields with a fixed capitalization convention: Botanical/Family Name and
+ * Origin start with a capital (Genus, Family, place name); Type is always
+ * all caps (e.g. "BLE S/T").
  */
 const TEXT_CASE: Partial<Record<PlantField, TextCase>> = {
   botanical_name: 'first',
   family_name: 'first',
+  origin: 'first',
   type: 'upper',
 }
 
