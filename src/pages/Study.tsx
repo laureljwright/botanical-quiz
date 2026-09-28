@@ -131,6 +131,8 @@ export function Study() {
                   src={plant.photo_urls[0]}
                   alt=""
                   className="study-card-photo"
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => {
                     e.currentTarget.style.visibility = 'hidden'
                   }}

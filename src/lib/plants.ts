@@ -98,8 +98,8 @@ async function convertHeicIfNeeded(file: File): Promise<File> {
   }
 }
 
-const MAX_PHOTO_DIMENSION = 1600
-const PHOTO_JPEG_QUALITY = 0.82
+const MAX_PHOTO_DIMENSION = 1100
+const PHOTO_JPEG_QUALITY = 0.75
 
 /**
  * Phone cameras routinely produce multi-megabyte, 12MP+ photos. Uploaded

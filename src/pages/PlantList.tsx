@@ -61,6 +61,8 @@ export function PlantList() {
                 src={plant.photo_urls[0]}
                 alt=""
                 className="plant-card-photo"
+                loading="lazy"
+                decoding="async"
                 onError={(e) => {
                   e.currentTarget.style.visibility = 'hidden'
                 }}
