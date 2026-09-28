@@ -212,6 +212,7 @@ export function PlantForm() {
                   }
                   autoCapitalize={autoCapitalizeFor(fieldTextCase(fieldKey))}
                   autoCorrect="off"
+                  autoComplete="off"
                   spellCheck={false}
                   required
                 />
@@ -228,9 +229,10 @@ export function PlantForm() {
               rows={3}
               value={plant.fun_fact ?? ''}
               onChange={(e) => setField('fun_fact', e.target.value)}
-              autoCapitalize="off"
-              autoCorrect="off"
-              spellCheck={false}
+              autoCapitalize="sentences"
+              autoCorrect="on"
+              autoComplete="off"
+              spellCheck={true}
             />
           </div>
 

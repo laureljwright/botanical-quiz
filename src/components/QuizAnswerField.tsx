@@ -58,6 +58,7 @@ export function QuizAnswerField({
           disabled={disabled}
           autoCapitalize={autoCapitalizeFor(textCase)}
           autoCorrect="off"
+          autoComplete="off"
           spellCheck={false}
         />
       )}

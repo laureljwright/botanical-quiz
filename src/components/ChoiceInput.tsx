@@ -34,6 +34,7 @@ export function ChoiceInput({
           onChange={(e) => onChange(e.target.value)}
           autoCapitalize="off"
           autoCorrect="off"
+          autoComplete="off"
           spellCheck={false}
           required={required}
         />
