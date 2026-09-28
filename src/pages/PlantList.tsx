@@ -4,6 +4,7 @@ import { TabBar } from '../components/TabBar'
 import trashIcon from '../assets/figma/trash-icon.svg'
 import editIcon from '../assets/figma/edit-icon.svg'
 import leafIcon from '../assets/figma/leaf-icon.svg'
+import { getErrorMessage } from '../lib/errors'
 import { deletePlant, fetchPlantsWithStats } from '../lib/plants'
 import type { PlantWithStats } from '../lib/types'
 
@@ -18,7 +19,7 @@ export function PlantList() {
       const data = await fetchPlantsWithStats()
       setPlants(data.slice().reverse())
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

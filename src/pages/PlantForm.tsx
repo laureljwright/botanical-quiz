@@ -3,8 +3,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ChoiceInput } from '../components/ChoiceInput'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
+import { Toggle } from '../components/Toggle'
 import uploadIcon from '../assets/figma/upload-icon.svg'
 import backArrow from '../assets/figma/back-arrow.svg'
+import { getErrorMessage } from '../lib/errors'
 import { applyTextCase, autoCapitalizeFor, fieldTextCase, isChoiceField } from '../lib/fieldOptions'
 import {
   createPlant,
@@ -28,6 +30,7 @@ const emptyPlant: NewPlant = {
   fun_fact: '',
   photo_urls: [],
   week_added: 1,
+  quizzed: false,
 }
 
 export function PlantForm() {
@@ -79,7 +82,7 @@ export function PlantForm() {
       const urls = await Promise.all(toUpload.map((file) => uploadPlantPhoto(file)))
       setPlant((p) => ({ ...p, photo_urls: [...p.photo_urls, ...urls] }))
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      setError(getErrorMessage(err))
     } finally {
       setUploading(false)
     }
@@ -105,7 +108,7 @@ export function PlantForm() {
       }
       navigate('/plants')
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      setError(getErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -117,20 +120,31 @@ export function PlantForm() {
     <div className="page-light">
       <TabBar active="plants" />
       <div className="screen-content">
-        <Link to="/plants" className="back-link">
-          <img src={backArrow} alt="" />
-          BACK
-        </Link>
-        <div className="week-header-block">
-          <div className="week-header">{isEdit ? 'Edit Plant' : 'Week added'}</div>
+        <div className="back-row">
+          <Link to="/plants" className="back-link">
+            <img src={backArrow} alt="" />
+            BACK
+          </Link>
+          <Toggle
+            label="Quizzed"
+            checked={plant.quizzed}
+            onChange={(checked) => setField('quizzed', checked)}
+          />
         </div>
-        <hr className="divider" />
+        {isEdit && (
+          <>
+            <div className="week-header-block">
+              <div className="week-header">Edit Plant</div>
+            </div>
+            <hr className="divider" />
+          </>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <div className="field-row">
-            <label className="uploader">
-              <img src={uploadIcon} alt="" width={32} height={25} />
-              <span className="uploader-label">{uploading ? 'Uploading…' : 'Upload Photos'}</span>
+          <div className="uploader-row">
+            <label className="uploader-tile uploader-tile-upload">
+              <img src={uploadIcon} alt="" />
+              <span>{uploading ? '…' : 'Upload'}</span>
               <input
                 type="file"
                 accept="image/*"
@@ -142,29 +156,25 @@ export function PlantForm() {
                 }}
               />
             </label>
-            {plant.photo_urls.length > 0 && (
-              <div className="uploader-thumbs">
-                {plant.photo_urls.map((url, i) => (
-                  <div className="uploader-thumb" key={url}>
-                    <img
-                      src={url}
-                      alt=""
-                      onError={(e) => {
-                        e.currentTarget.style.visibility = 'hidden'
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="uploader-thumb-remove"
-                      aria-label="Remove photo"
-                      onClick={() => removePhoto(i)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+            {plant.photo_urls.map((url, i) => (
+              <div className="uploader-tile uploader-tile-photo" key={url}>
+                <img
+                  src={url}
+                  alt=""
+                  onError={(e) => {
+                    e.currentTarget.style.visibility = 'hidden'
+                  }}
+                />
+                <button
+                  type="button"
+                  className="uploader-thumb-remove"
+                  aria-label="Remove photo"
+                  onClick={() => removePhoto(i)}
+                >
+                  ×
+                </button>
               </div>
-            )}
+            ))}
           </div>
 
           {PLANT_FIELDS.map((fieldKey) => (

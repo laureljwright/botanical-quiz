@@ -10,6 +10,8 @@ export interface Plant {
   fun_fact: string | null
   photo_urls: string[]
   week_added: number
+  /** Manually marked: has this plant come up in a past quiz session? */
+  quizzed: boolean
   created_at: string
 }
 

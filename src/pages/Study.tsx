@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { PhotoCarousel } from '../components/PhotoCarousel'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
+import { getErrorMessage } from '../lib/errors'
 import { fetchPlantsWithStats } from '../lib/plants'
 import { FIELD_LABELS } from '../lib/types'
 import type { PlantField, PlantWithStats } from '../lib/types'
@@ -27,7 +28,7 @@ export function Study() {
         const data = await fetchPlantsWithStats()
         setPlants(data)
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err))
+        setError(getErrorMessage(err))
       } finally {
         setLoading(false)
       }

@@ -4,6 +4,7 @@ import { PhotoCarousel } from '../components/PhotoCarousel'
 import { ProgressHeader } from '../components/ProgressHeader'
 import { QuizAnswerField, type FieldStatus } from '../components/QuizAnswerField'
 import { TabBar } from '../components/TabBar'
+import { getErrorMessage } from '../lib/errors'
 import { isCorrectAnswer } from '../lib/match'
 import { fetchPlantsWithStats, recordQuizResult } from '../lib/plants'
 import { distinctFieldValues, fieldTextCase, isChoiceField } from '../lib/fieldOptions'
@@ -22,8 +23,12 @@ function emptyStatuses(): Statuses {
   return Object.fromEntries(PLANT_FIELDS.map((f) => [f, 'idle'])) as Statuses
 }
 
-function plantsForWeek(plants: PlantWithStats[], week: string): PlantWithStats[] {
-  return week === 'all' ? plants : plants.filter((p) => String(p.week_added) === week)
+const NOT_QUIZZED = 'not-quizzed'
+
+function filterPlants(plants: PlantWithStats[], filter: string): PlantWithStats[] {
+  if (filter === 'all') return plants
+  if (filter === NOT_QUIZZED) return plants.filter((p) => !p.quizzed)
+  return plants.filter((p) => String(p.week_added) === filter)
 }
 
 export function Quiz() {
@@ -38,7 +43,7 @@ export function Quiz() {
   const [graded, setGraded] = useState(false)
   const [roundScore, setRoundScore] = useState<number | null>(null)
   const [showTip, setShowTip] = useState(false)
-  const [weekFilter, setWeekFilter] = useState('all')
+  const [filterValue, setFilterValue] = useState('all')
 
   const [sessionPoints, setSessionPoints] = useState(0)
   const [sessionTotal, setSessionTotal] = useState(0)
@@ -55,7 +60,7 @@ export function Quiz() {
           setRemainingIds(pick.remainingIds)
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err))
+        setError(getErrorMessage(err))
       } finally {
         setLoading(false)
       }
@@ -63,7 +68,7 @@ export function Quiz() {
     load()
   }, [])
 
-  const quizPlants = plantsForWeek(plants, weekFilter)
+  const quizPlants = filterPlants(plants, filterValue)
   const weeks = Array.from(new Set(plants.map((p) => p.week_added))).sort((a, b) => a - b)
   // Options come from every plant (not the week filter), so narrowing to one
   // week doesn't shrink the list and give the answer away.
@@ -95,10 +100,8 @@ export function Quiz() {
 
   function startRound(pool: PlantWithStats[], remaining: string[]) {
     const pick = pickNextPlant(pool, remaining)
-    if (pick) {
-      setCurrent(pick.plant)
-      setRemainingIds(pick.remainingIds)
-    }
+    setCurrent(pick?.plant ?? null)
+    setRemainingIds(pick?.remainingIds ?? [])
     setAnswers(emptyAnswers())
     setStatuses(emptyStatuses())
     setGraded(false)
@@ -116,10 +119,10 @@ export function Quiz() {
     startRound(quizPlants, remainingIds)
   }
 
-  function handleWeekChange(value: string) {
-    setWeekFilter(value)
-    // New pool means a fresh cycle, so every plant in that week gets shown.
-    startRound(plantsForWeek(plants, value), [])
+  function handleFilterChange(value: string) {
+    setFilterValue(value)
+    // New pool means a fresh cycle, so every matching plant gets shown.
+    startRound(filterPlants(plants, value), [])
   }
 
   if (loading) return <div className="page-dark screen-content">Loading…</div>
@@ -131,14 +134,29 @@ export function Quiz() {
     )
 
   if (!current) {
+    const noPlantsAtAll = plants.length === 0
     return (
       <div className="page-dark">
         <TabBar active="quiz" />
         <div className="screen-content">
-          <p>No plants yet — add some first before quizzing yourself.</p>
-          <Link to="/plants/new" className="btn-pill btn-pill-mint" style={{ textAlign: 'center' }}>
-            + Add New Plants
-          </Link>
+          <p>
+            {noPlantsAtAll
+              ? 'No plants yet — add some first before quizzing yourself.'
+              : "No plants match this filter — everything's already marked quizzed, or that week is empty."}
+          </p>
+          {noPlantsAtAll ? (
+            <Link to="/plants/new" className="btn-pill btn-pill-mint" style={{ textAlign: 'center' }}>
+              + Add New Plants
+            </Link>
+          ) : (
+            <button
+              type="button"
+              className="btn-pill btn-pill-mint"
+              onClick={() => handleFilterChange('all')}
+            >
+              Show all weeks
+            </button>
+          )}
         </div>
       </div>
     )
@@ -155,14 +173,15 @@ export function Quiz() {
             possiblePoints={sessionTotal * TOTAL_QUIZ_POINTS}
             streak={streak}
           />
-          {weeks.length > 1 && (
+          {plants.length > 0 && (
             <select
               className="quiz-week-select"
-              value={weekFilter}
-              onChange={(e) => handleWeekChange(e.target.value)}
-              aria-label="Quiz on week"
+              value={filterValue}
+              onChange={(e) => handleFilterChange(e.target.value)}
+              aria-label="Filter which plants to quiz on"
             >
               <option value="all">All weeks</option>
+              <option value={NOT_QUIZZED}>Not quizzed yet</option>
               {weeks.map((w) => (
                 <option key={w} value={String(w)}>
                   Week {w}
