@@ -3,6 +3,7 @@ import { PhotoCarousel } from '../components/PhotoCarousel'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
 import { getErrorMessage } from '../lib/errors'
+import { filterByWeekOrQuizzed, NOT_QUIZZED } from '../lib/fieldOptions'
 import { fetchPlantsWithStats } from '../lib/plants'
 import { FIELD_LABELS } from '../lib/types'
 import type { PlantField, PlantWithStats } from '../lib/types'
@@ -46,8 +47,7 @@ export function Study() {
   )
 
   const visiblePlants = useMemo(() => {
-    let list = plants
-    if (weekFilter !== 'all') list = list.filter((p) => String(p.week_added) === weekFilter)
+    let list = filterByWeekOrQuizzed(plants, weekFilter)
     if (familyFilter !== 'all') list = list.filter((p) => p.family_name === familyFilter)
     return [...list].sort((a, b) => {
       const diff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -92,6 +92,7 @@ export function Study() {
               <span>Week</span>
               <select value={weekFilter} onChange={(e) => setWeekFilter(e.target.value)}>
                 <option value="all">All weeks</option>
+                <option value={NOT_QUIZZED}>Not quizzed yet</option>
                 {weeks.map((w) => (
                   <option key={w} value={String(w)}>
                     Week {w}

@@ -7,7 +7,13 @@ import { TabBar } from '../components/TabBar'
 import { getErrorMessage } from '../lib/errors'
 import { isCorrectAnswer } from '../lib/match'
 import { fetchPlantsWithStats, recordQuizResult } from '../lib/plants'
-import { distinctFieldValues, fieldTextCase, isChoiceField } from '../lib/fieldOptions'
+import {
+  distinctFieldValues,
+  fieldTextCase,
+  filterByWeekOrQuizzed,
+  isChoiceField,
+  NOT_QUIZZED,
+} from '../lib/fieldOptions'
 import { pickNextPlant } from '../lib/quizSelection'
 import { FIELD_LABELS, FIELD_POINTS, PLANT_FIELDS, TOTAL_QUIZ_POINTS } from '../lib/types'
 import type { PlantField, PlantWithStats } from '../lib/types'
@@ -21,14 +27,6 @@ function emptyAnswers(): Answers {
 
 function emptyStatuses(): Statuses {
   return Object.fromEntries(PLANT_FIELDS.map((f) => [f, 'idle'])) as Statuses
-}
-
-const NOT_QUIZZED = 'not-quizzed'
-
-function filterPlants(plants: PlantWithStats[], filter: string): PlantWithStats[] {
-  if (filter === 'all') return plants
-  if (filter === NOT_QUIZZED) return plants.filter((p) => !p.quizzed)
-  return plants.filter((p) => String(p.week_added) === filter)
 }
 
 export function Quiz() {
@@ -68,7 +66,7 @@ export function Quiz() {
     load()
   }, [])
 
-  const quizPlants = filterPlants(plants, filterValue)
+  const quizPlants = filterByWeekOrQuizzed(plants, filterValue)
   const weeks = Array.from(new Set(plants.map((p) => p.week_added))).sort((a, b) => a - b)
   // Options come from every plant (not the week filter), so narrowing to one
   // week doesn't shrink the list and give the answer away.
@@ -122,7 +120,7 @@ export function Quiz() {
   function handleFilterChange(value: string) {
     setFilterValue(value)
     // New pool means a fresh cycle, so every matching plant gets shown.
-    startRound(filterPlants(plants, value), [])
+    startRound(filterByWeekOrQuizzed(plants, value), [])
   }
 
   if (loading) return <div className="page-dark screen-content">Loading…</div>
