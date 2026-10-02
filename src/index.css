@@ -1010,3 +1010,15 @@ textarea {
   margin-left: 8px;
   vertical-align: middle;
 }
+
+.study-controls-left {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.study-count {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: #333;
+}

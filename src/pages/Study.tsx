@@ -70,13 +70,18 @@ export function Study() {
       <TabBar active="study" />
       <div className="screen-content">
         <div className="study-controls">
-          <button
-            type="button"
-            className="study-filter-toggle"
-            onClick={() => setShowFilters((s) => !s)}
-          >
-            Filters
-          </button>
+          <div className="study-controls-left">
+            <button
+              type="button"
+              className="study-filter-toggle"
+              onClick={() => setShowFilters((s) => !s)}
+            >
+              Filters
+            </button>
+            <span className="study-count" aria-label={`${visiblePlants.length} plants`}>
+              ({visiblePlants.length})
+            </span>
+          </div>
           <select
             className="study-sort-select"
             value={sortOrder}
