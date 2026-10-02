@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { PhotoCarousel } from '../components/PhotoCarousel'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
+import editIcon from '../assets/figma/edit-icon.svg'
 import { getErrorMessage } from '../lib/errors'
 import { filterByWeekOrQuizzed, NOT_QUIZZED } from '../lib/fieldOptions'
 import { fetchPlantsWithStats } from '../lib/plants'
@@ -146,6 +148,14 @@ export function Study() {
                 </div>
                 <div className="study-card-common">{plant.common_name}</div>
               </div>
+              <Link
+                to={`/plants/${plant.id}/edit`}
+                state={{ from: '/study' }}
+                className="study-card-edit"
+                aria-label={`Edit ${plant.botanical_name || 'plant'}`}
+              >
+                <img src={editIcon} alt="" />
+              </Link>
             </div>
             <div className="study-card-details">
               {DETAIL_FIELDS.map((field) => (

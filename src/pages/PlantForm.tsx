@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ChoiceInput } from '../components/ChoiceInput'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
@@ -37,6 +37,8 @@ export function PlantForm() {
   const { id } = useParams()
   const isEdit = Boolean(id)
   const navigate = useNavigate()
+  // Opened from the Study guide? Go back there after saving / on BACK.
+  const backTo = (useLocation().state as { from?: string } | null)?.from ?? '/plants'
 
   const [plant, setPlant] = useState<NewPlant>(emptyPlant)
   const [uploading, setUploading] = useState(false)
@@ -106,7 +108,7 @@ export function PlantForm() {
       } else {
         await createPlant(cleaned)
       }
-      navigate('/plants')
+      navigate(backTo)
     } catch (err) {
       setError(getErrorMessage(err))
     } finally {
@@ -118,10 +120,10 @@ export function PlantForm() {
 
   return (
     <div className="page-light">
-      <TabBar active="plants" />
+      <TabBar active={backTo === '/study' ? 'study' : 'plants'} />
       <div className="screen-content">
         <div className="back-row">
-          <Link to="/plants" className="back-link">
+          <Link to={backTo} className="back-link">
             <img src={backArrow} alt="" />
             BACK
           </Link>

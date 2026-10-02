@@ -948,3 +948,18 @@ textarea {
 .toggle.on .toggle-knob {
   transform: translateX(20px);
 }
+
+.study-card-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.study-card-edit img {
+  width: 20px;
+  height: 20px;
+}
