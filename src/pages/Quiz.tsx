@@ -201,7 +201,7 @@ export function Quiz() {
               <span className="tip-icon" aria-hidden="true" />
               {showTip ? 'Hide tip' : 'Show tip'}
             </button>
-            {showTip && <div className="fun-fact">🌱 {current.fun_fact}</div>}
+            {showTip && <div className="fun-fact">{current.fun_fact}</div>}
           </>
         )}
 

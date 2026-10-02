@@ -224,7 +224,7 @@ export function PlantForm() {
 
           <div className="field-row">
             <label className="field-row-label" htmlFor="fun_fact">
-              Fun Fact (shown after a correct quiz answer)
+              Tip
             </label>
             <textarea
               id="fun_fact"

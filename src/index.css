@@ -751,9 +751,6 @@ textarea {
 }
 
 .study-card-name {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   font-family: var(--font-body);
   font-weight: 700;
   font-size: 20px;
@@ -1001,8 +998,15 @@ textarea {
 }
 
 .tip-icon {
-  width: 15px;
-  height: 18px;
+  width: 21px;
+  height: 24px;
   -webkit-mask-image: url('/tip-icon.svg');
   mask-image: url('/tip-icon.svg');
+}
+
+/* Sound icons sit inline right after their text and center on its line. */
+.study-card-name .pronounce-btn,
+.study-card-details .pronounce-btn {
+  margin-left: 8px;
+  vertical-align: middle;
 }

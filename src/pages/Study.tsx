@@ -153,11 +153,7 @@ export function Study() {
               {DETAIL_FIELDS.map((field) => (
                 <div key={field}>
                   {FIELD_LABELS[field]}: {plant[field]}
-                  {field === 'family_name' && (
-                    <span style={{ marginLeft: 6, display: 'inline-block' }}>
-                      <PronounceButton text={plant.family_name} />
-                    </span>
-                  )}
+                  {field === 'family_name' && <PronounceButton text={plant.family_name} />}
                 </div>
               ))}
             </div>
