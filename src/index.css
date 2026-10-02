@@ -949,17 +949,60 @@ textarea {
   transform: translateX(20px);
 }
 
+.study-card {
+  position: relative;
+}
+
 .study-card-edit {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin-left: auto;
-  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
 }
 
 .study-card-edit img {
   width: 20px;
   height: 20px;
+}
+
+/* Icons live in /public as SVGs; masking them lets them take the current
+   text color, so one file works on both the dark and light pages. */
+.pronounce-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.pronounce-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pronounce-icon,
+.tip-icon {
+  display: block;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.pronounce-icon {
+  width: 17px;
+  height: 17px;
+  -webkit-mask-image: url('/sound-icon.svg');
+  mask-image: url('/sound-icon.svg');
+}
+
+.tip-icon {
+  width: 15px;
+  height: 18px;
+  -webkit-mask-image: url('/tip-icon.svg');
+  mask-image: url('/tip-icon.svg');
 }

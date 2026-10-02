@@ -198,7 +198,8 @@ export function Quiz() {
               className="tip-toggle"
               onClick={() => setShowTip((s) => !s)}
             >
-              💡 {showTip ? 'Hide tip' : 'Show tip'}
+              <span className="tip-icon" aria-hidden="true" />
+              {showTip ? 'Hide tip' : 'Show tip'}
             </button>
             {showTip && <div className="fun-fact">🌱 {current.fun_fact}</div>}
           </>

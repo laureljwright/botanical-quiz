@@ -148,14 +148,6 @@ export function Study() {
                 </div>
                 <div className="study-card-common">{plant.common_name}</div>
               </div>
-              <Link
-                to={`/plants/${plant.id}/edit`}
-                state={{ from: '/study' }}
-                className="study-card-edit"
-                aria-label={`Edit ${plant.botanical_name || 'plant'}`}
-              >
-                <img src={editIcon} alt="" />
-              </Link>
             </div>
             <div className="study-card-details">
               {DETAIL_FIELDS.map((field) => (
@@ -169,6 +161,14 @@ export function Study() {
                 </div>
               ))}
             </div>
+            <Link
+              to={`/plants/${plant.id}/edit`}
+              state={{ from: '/study' }}
+              className="study-card-edit"
+              aria-label={`Edit ${plant.botanical_name || 'plant'}`}
+            >
+              <img src={editIcon} alt="" />
+            </Link>
           </div>
         ))}
       </div>

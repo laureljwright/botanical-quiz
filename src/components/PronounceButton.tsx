@@ -10,7 +10,7 @@ export function PronounceButton({ text }: { text: string }) {
       onClick={() => pronounce(text)}
       disabled={!text.trim()}
     >
-      🔊
+      <span className="pronounce-icon" aria-hidden="true" />
     </button>
   )
 }
