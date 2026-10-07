@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import loginIcon from '../assets/login-icon.png'
 import { supabase } from '../lib/supabaseClient'
 
 export function Login() {
@@ -25,8 +26,9 @@ export function Login() {
   return (
     <div className="page-dark">
       <div className="screen-content">
-        <div className="week-header-block">
-          <div className="week-header">Fall/Winter Plant ID Quiz</div>
+        <div className="login-header">
+          <div className="week-header login-title">Fall/Winter Plant ID Quiz</div>
+          <img className="login-icon" src={loginIcon} alt="" />
         </div>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div className="field-row">

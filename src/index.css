@@ -1022,3 +1022,22 @@ textarea {
   font-size: 11px;
   color: #333;
 }
+
+.login-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  /* design puts the form 30px under the icon; the column gap already gives 24 */
+  margin-bottom: 6px;
+}
+
+.login-title {
+  max-width: 156px;
+}
+
+.login-icon {
+  width: 172px;
+  height: 172px;
+  flex-shrink: 0;
+}
