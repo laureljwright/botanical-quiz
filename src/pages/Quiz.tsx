@@ -15,7 +15,7 @@ import {
   NOT_QUIZZED,
 } from '../lib/fieldOptions'
 import { pickNextPlant } from '../lib/quizSelection'
-import { FIELD_LABELS, FIELD_POINTS, PLANT_FIELDS, TOTAL_QUIZ_POINTS } from '../lib/types'
+import { FIELD_LABELS, FIELD_POINTS, MIDTERM_FIELDS, PLANT_FIELDS } from '../lib/types'
 import type { PlantField, PlantWithStats } from '../lib/types'
 
 type Answers = Record<PlantField, string>
@@ -29,7 +29,8 @@ function emptyStatuses(): Statuses {
   return Object.fromEntries(PLANT_FIELDS.map((f) => [f, 'idle'])) as Statuses
 }
 
-export function Quiz() {
+/** 'midterm' asks only the names (botanical, common, family); 'full' asks everything. */
+export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
   const [plants, setPlants] = useState<PlantWithStats[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -66,6 +67,8 @@ export function Quiz() {
     load()
   }, [])
 
+  const fields = mode === 'midterm' ? MIDTERM_FIELDS : PLANT_FIELDS
+  const totalPoints = fields.reduce((sum, f) => sum + FIELD_POINTS[f], 0)
   const quizPlants = filterByWeekOrQuizzed(plants, filterValue)
   const weeks = Array.from(new Set(plants.map((p) => p.week_added))).sort((a, b) => a - b)
   // Options come from every plant (not the week filter), so narrowing to one
@@ -79,7 +82,7 @@ export function Quiz() {
     const nextStatuses = emptyStatuses()
     let allCorrect = true
     let points = 0
-    for (const field of PLANT_FIELDS) {
+    for (const field of fields) {
       const ok = isCorrectAnswer(answers[field], current[field])
       nextStatuses[field] = ok ? 'correct' : 'incorrect'
       if (ok) points += FIELD_POINTS[field]
@@ -135,7 +138,7 @@ export function Quiz() {
     const noPlantsAtAll = plants.length === 0
     return (
       <div className="page-dark">
-        <TabBar active="quiz" />
+        <TabBar active={mode === 'midterm' ? 'midterm' : 'quiz'} />
         <div className="screen-content">
           <p>
             {noPlantsAtAll
@@ -162,13 +165,13 @@ export function Quiz() {
 
   return (
     <div className="page-dark">
-      <TabBar active="quiz" />
+      <TabBar active={mode === 'midterm' ? 'midterm' : 'quiz'} />
       <div className="screen-content">
         <div className="quiz-top-row">
           <ProgressHeader
             week={current.week_added}
             points={sessionPoints}
-            possiblePoints={sessionTotal * TOTAL_QUIZ_POINTS}
+            possiblePoints={sessionTotal * totalPoints}
             streak={streak}
           />
           {plants.length > 0 && (
@@ -205,7 +208,7 @@ export function Quiz() {
           </>
         )}
 
-        {PLANT_FIELDS.map((field) => (
+        {fields.map((field) => (
           <QuizAnswerField
             key={field}
             label={FIELD_LABELS[field]}
@@ -226,7 +229,7 @@ export function Quiz() {
 
         {graded && roundScore !== null && (
           <div className="round-score">
-            Score: {roundScore}/{TOTAL_QUIZ_POINTS}
+            Score: {roundScore}/{totalPoints}
           </div>
         )}
 

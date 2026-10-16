@@ -80,7 +80,15 @@ export default function App() {
           path="/quiz"
           element={
             <RequireAuth>
-              <Quiz />
+              <Quiz key="quiz" />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/midterm"
+          element={
+            <RequireAuth>
+              <Quiz key="midterm" mode="midterm" />
             </RequireAuth>
           }
         />

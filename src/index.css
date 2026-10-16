@@ -239,10 +239,20 @@ textarea {
 .tab-bar-pills {
   display: flex;
   gap: 8px;
+  /* scrolls sideways when the tabs don't fit; bleeds to the screen edges */
+  overflow-x: auto;
+  margin: 0 -24px;
+  padding: 0 24px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-bar-pills::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-pill {
-  flex: 1;
+  flex: 1 0 auto;
   text-align: center;
   padding: 7px 8px;
   border-radius: 20px;

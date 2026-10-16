@@ -1,9 +1,18 @@
+import { useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import logoutIcon from '../assets/figma/logout-icon.svg'
 
-export function TabBar({ active }: { active: 'quiz' | 'plants' | 'study' }) {
+export function TabBar({ active }: { active: 'quiz' | 'midterm' | 'plants' | 'study' }) {
   const navigate = useNavigate()
+  const pillsRef = useRef<HTMLDivElement>(null)
+
+  // The row scrolls sideways; make sure the current tab is in view on arrival.
+  useEffect(() => {
+    const row = pillsRef.current
+    const el = row?.querySelector<HTMLElement>('.tab-pill.active')
+    if (row && el) row.scrollLeft = el.offsetLeft - (row.clientWidth - el.offsetWidth) / 2
+  }, [active])
 
   async function handleSignOut() {
     await supabase.auth.signOut()
@@ -23,12 +32,15 @@ export function TabBar({ active }: { active: 'quiz' | 'plants' | 'study' }) {
           <img src={logoutIcon} alt="" />
         </button>
       </div>
-      <div className="tab-bar-pills">
-        <Link to="/study" className={`tab-pill ${active === 'study' ? 'active' : ''}`}>
-          Study
-        </Link>
+      <div className="tab-bar-pills" ref={pillsRef}>
         <Link to="/quiz" className={`tab-pill ${active === 'quiz' ? 'active' : ''}`}>
           Quiz
+        </Link>
+        <Link to="/midterm" className={`tab-pill ${active === 'midterm' ? 'active' : ''}`}>
+          Midterm
+        </Link>
+        <Link to="/study" className={`tab-pill ${active === 'study' ? 'active' : ''}`}>
+          Study
         </Link>
         <Link to="/plants" className={`tab-pill ${active === 'plants' ? 'active' : ''}`}>
           + New Plants

@@ -62,3 +62,6 @@ export const FIELD_POINTS: Record<PlantField, number> = {
 }
 
 export const TOTAL_QUIZ_POINTS = PLANT_FIELDS.reduce((sum, f) => sum + FIELD_POINTS[f], 0)
+
+/** What the midterm quiz asks for: just the three names. */
+export const MIDTERM_FIELDS: readonly PlantField[] = ['botanical_name', 'common_name', 'family_name']
