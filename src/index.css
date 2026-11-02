@@ -1084,3 +1084,14 @@ textarea {
 .page-dark .toggle.on .toggle-knob {
   background: var(--color-forest);
 }
+
+/* In the quiz header the switch should read like the week dropdown beside it. */
+.quiz-filters .toggle {
+  gap: 8px;
+}
+
+.quiz-filters .toggle-label {
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
