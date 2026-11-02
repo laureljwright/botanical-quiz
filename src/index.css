@@ -1060,43 +1060,27 @@ textarea {
   gap: 8px;
 }
 
-/* On/off pill used alongside the week pickers. */
-.filter-chip {
-  font-family: var(--font-body);
-  font-size: 12px;
-  line-height: 1.2;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: transparent;
-  border: 1px solid currentColor;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.page-dark .filter-chip {
-  color: #fff;
-}
-
-.page-dark .filter-chip[aria-pressed='true'] {
-  background: #fff;
-  border-color: #fff;
-  color: var(--color-forest);
-}
-
-.page-light .filter-chip {
-  color: var(--color-forest);
-}
-
-.page-light .filter-chip[aria-pressed='true'] {
-  background: var(--color-forest);
-  border-color: var(--color-forest);
-  color: #fff;
-}
-
 .study-filters {
   flex-wrap: wrap;
 }
 
 .study-filter-chip-row {
   flex: 0 0 100%;
+}
+
+/* The switch is styled for light pages; give it a dark-page variant. */
+.page-dark .toggle-label {
+  color: #fff;
+}
+
+.page-dark .toggle-track {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.page-dark .toggle.on .toggle-track {
+  background: var(--color-sage);
+}
+
+.page-dark .toggle.on .toggle-knob {
+  background: var(--color-forest);
 }

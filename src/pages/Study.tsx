@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { PhotoCarousel } from '../components/PhotoCarousel'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
+import { Toggle } from '../components/Toggle'
 import editIcon from '../assets/figma/edit-icon.svg'
 import { getErrorMessage } from '../lib/errors'
 import { filterByWeekAndQuizzed } from '../lib/fieldOptions'
@@ -119,14 +120,11 @@ export function Study() {
               </select>
             </label>
             <div className="study-filter-chip-row">
-              <button
-                type="button"
-                className="filter-chip"
-                aria-pressed={notQuizzedOnly}
-                onClick={() => setNotQuizzedOnly((v) => !v)}
-              >
-                Not quizzed yet
-              </button>
+              <Toggle
+                label="Not quizzed yet"
+                checked={notQuizzedOnly}
+                onChange={setNotQuizzedOnly}
+              />
             </div>
           </div>
         )}

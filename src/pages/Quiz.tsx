@@ -4,6 +4,7 @@ import { PhotoCarousel } from '../components/PhotoCarousel'
 import { ProgressHeader } from '../components/ProgressHeader'
 import { QuizAnswerField, type FieldStatus } from '../components/QuizAnswerField'
 import { TabBar } from '../components/TabBar'
+import { Toggle } from '../components/Toggle'
 import { getErrorMessage } from '../lib/errors'
 import { isCorrectAnswer } from '../lib/match'
 import { fetchPlantsWithStats, recordQuizResult } from '../lib/plants'
@@ -190,14 +191,11 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
                   </option>
                 ))}
               </select>
-              <button
-                type="button"
-                className="filter-chip"
-                aria-pressed={notQuizzedOnly}
-                onClick={() => applyFilters(filterValue, !notQuizzedOnly)}
-              >
-                Not quizzed
-              </button>
+              <Toggle
+                label="Not quizzed"
+                checked={notQuizzedOnly}
+                onChange={(checked) => applyFilters(filterValue, checked)}
+              />
             </div>
           )}
         </div>
