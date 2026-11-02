@@ -1051,3 +1051,52 @@ textarea {
   height: 172px;
   flex-shrink: 0;
 }
+
+.quiz-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* On/off pill used alongside the week pickers. */
+.filter-chip {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: transparent;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.page-dark .filter-chip {
+  color: #fff;
+}
+
+.page-dark .filter-chip[aria-pressed='true'] {
+  background: #fff;
+  border-color: #fff;
+  color: var(--color-forest);
+}
+
+.page-light .filter-chip {
+  color: var(--color-forest);
+}
+
+.page-light .filter-chip[aria-pressed='true'] {
+  background: var(--color-forest);
+  border-color: var(--color-forest);
+  color: #fff;
+}
+
+.study-filters {
+  flex-wrap: wrap;
+}
+
+.study-filter-chip-row {
+  flex: 0 0 100%;
+}

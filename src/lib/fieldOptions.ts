@@ -39,20 +39,17 @@ export function isChoiceField(field: PlantField): boolean {
   return CHOICE_FIELDS.includes(field)
 }
 
-/** Special week-filter value meaning "plants not yet marked quizzed". */
-export const NOT_QUIZZED = 'not-quizzed'
-
 /**
- * Shared by Quiz mode and Study: a filter value that's either 'all', a week
- * number (as a string), or NOT_QUIZZED.
+ * Shared by Quiz mode and Study: narrow to a week ('all', or a week number as a
+ * string) and, independently, to plants not yet marked quizzed.
  */
-export function filterByWeekOrQuizzed<T extends { week_added: number; quizzed: boolean }>(
+export function filterByWeekAndQuizzed<T extends { week_added: number; quizzed: boolean }>(
   plants: T[],
-  filter: string,
+  week: string,
+  notQuizzedOnly: boolean,
 ): T[] {
-  if (filter === 'all') return plants
-  if (filter === NOT_QUIZZED) return plants.filter((p) => !p.quizzed)
-  return plants.filter((p) => String(p.week_added) === filter)
+  const inWeek = week === 'all' ? plants : plants.filter((p) => String(p.week_added) === week)
+  return notQuizzedOnly ? inWeek.filter((p) => !p.quizzed) : inWeek
 }
 
 /**

@@ -5,7 +5,7 @@ import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
 import editIcon from '../assets/figma/edit-icon.svg'
 import { getErrorMessage } from '../lib/errors'
-import { filterByWeekOrQuizzed, NOT_QUIZZED } from '../lib/fieldOptions'
+import { filterByWeekAndQuizzed } from '../lib/fieldOptions'
 import { fetchPlantsWithStats } from '../lib/plants'
 import { FIELD_LABELS } from '../lib/types'
 import type { PlantField, PlantWithStats } from '../lib/types'
@@ -22,6 +22,7 @@ export function Study() {
   const [showFilters, setShowFilters] = useState(false)
   const [weekFilter, setWeekFilter] = useState('all')
   const [familyFilter, setFamilyFilter] = useState('all')
+  const [notQuizzedOnly, setNotQuizzedOnly] = useState(false)
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest')
   const [activePlant, setActivePlant] = useState<PlantWithStats | null>(null)
 
@@ -49,13 +50,13 @@ export function Study() {
   )
 
   const visiblePlants = useMemo(() => {
-    let list = filterByWeekOrQuizzed(plants, weekFilter)
+    let list = filterByWeekAndQuizzed(plants, weekFilter, notQuizzedOnly)
     if (familyFilter !== 'all') list = list.filter((p) => p.family_name === familyFilter)
     return [...list].sort((a, b) => {
       const diff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       return sortOrder === 'newest' ? diff : -diff
     })
-  }, [plants, weekFilter, familyFilter, sortOrder])
+  }, [plants, weekFilter, familyFilter, notQuizzedOnly, sortOrder])
 
   if (loading) return <div className="page-light screen-content">Loading…</div>
   if (error)
@@ -99,7 +100,6 @@ export function Study() {
               <span>Week</span>
               <select value={weekFilter} onChange={(e) => setWeekFilter(e.target.value)}>
                 <option value="all">All weeks</option>
-                <option value={NOT_QUIZZED}>Not quizzed yet</option>
                 {weeks.map((w) => (
                   <option key={w} value={String(w)}>
                     Week {w}
@@ -118,6 +118,16 @@ export function Study() {
                 ))}
               </select>
             </label>
+            <div className="study-filter-chip-row">
+              <button
+                type="button"
+                className="filter-chip"
+                aria-pressed={notQuizzedOnly}
+                onClick={() => setNotQuizzedOnly((v) => !v)}
+              >
+                Not quizzed yet
+              </button>
+            </div>
           </div>
         )}
 

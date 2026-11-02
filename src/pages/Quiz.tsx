@@ -10,9 +10,8 @@ import { fetchPlantsWithStats, recordQuizResult } from '../lib/plants'
 import {
   distinctFieldValues,
   fieldTextCase,
-  filterByWeekOrQuizzed,
+  filterByWeekAndQuizzed,
   isChoiceField,
-  NOT_QUIZZED,
 } from '../lib/fieldOptions'
 import { pickNextPlant } from '../lib/quizSelection'
 import { FIELD_LABELS, FIELD_POINTS, MIDTERM_FIELDS, PLANT_FIELDS } from '../lib/types'
@@ -43,6 +42,7 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
   const [roundScore, setRoundScore] = useState<number | null>(null)
   const [showTip, setShowTip] = useState(false)
   const [filterValue, setFilterValue] = useState('all')
+  const [notQuizzedOnly, setNotQuizzedOnly] = useState(false)
 
   const [sessionPoints, setSessionPoints] = useState(0)
   const [sessionTotal, setSessionTotal] = useState(0)
@@ -69,7 +69,7 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
 
   const fields = mode === 'midterm' ? MIDTERM_FIELDS : PLANT_FIELDS
   const totalPoints = fields.reduce((sum, f) => sum + FIELD_POINTS[f], 0)
-  const quizPlants = filterByWeekOrQuizzed(plants, filterValue)
+  const quizPlants = filterByWeekAndQuizzed(plants, filterValue, notQuizzedOnly)
   const weeks = Array.from(new Set(plants.map((p) => p.week_added))).sort((a, b) => a - b)
   // Options come from every plant (not the week filter), so narrowing to one
   // week doesn't shrink the list and give the answer away.
@@ -120,10 +120,11 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
     startRound(quizPlants, remainingIds)
   }
 
-  function handleFilterChange(value: string) {
-    setFilterValue(value)
+  function applyFilters(week: string, notQuizzed: boolean) {
+    setFilterValue(week)
+    setNotQuizzedOnly(notQuizzed)
     // New pool means a fresh cycle, so every matching plant gets shown.
-    startRound(filterByWeekOrQuizzed(plants, value), [])
+    startRound(filterByWeekAndQuizzed(plants, week, notQuizzed), [])
   }
 
   if (loading) return <div className="page-dark screen-content">Loading…</div>
@@ -143,7 +144,7 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
           <p>
             {noPlantsAtAll
               ? 'No plants yet — add some first before quizzing yourself.'
-              : "No plants match this filter — everything's already marked quizzed, or that week is empty."}
+              : "No plants match these filters — everything may already be marked quizzed, or that week is empty."}
           </p>
           {noPlantsAtAll ? (
             <Link to="/plants/new" className="btn-pill btn-pill-mint" style={{ textAlign: 'center' }}>
@@ -153,9 +154,9 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
             <button
               type="button"
               className="btn-pill btn-pill-mint"
-              onClick={() => handleFilterChange('all')}
+              onClick={() => applyFilters('all', false)}
             >
-              Show all weeks
+              Clear filters
             </button>
           )}
         </div>
@@ -175,20 +176,29 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
             streak={streak}
           />
           {plants.length > 0 && (
-            <select
-              className="quiz-week-select"
-              value={filterValue}
-              onChange={(e) => handleFilterChange(e.target.value)}
-              aria-label="Filter which plants to quiz on"
-            >
-              <option value="all">All weeks</option>
-              <option value={NOT_QUIZZED}>Not quizzed yet</option>
-              {weeks.map((w) => (
-                <option key={w} value={String(w)}>
-                  Week {w}
-                </option>
-              ))}
-            </select>
+            <div className="quiz-filters">
+              <select
+                className="quiz-week-select"
+                value={filterValue}
+                onChange={(e) => applyFilters(e.target.value, notQuizzedOnly)}
+                aria-label="Quiz on week"
+              >
+                <option value="all">All weeks</option>
+                {weeks.map((w) => (
+                  <option key={w} value={String(w)}>
+                    Week {w}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="filter-chip"
+                aria-pressed={notQuizzedOnly}
+                onClick={() => applyFilters(filterValue, !notQuizzedOnly)}
+              >
+                Not quizzed
+              </button>
+            </div>
           )}
         </div>
 
