@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ChoiceInput } from '../components/ChoiceInput'
+import { Loading } from '../components/Loading'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
 import { Toggle } from '../components/Toggle'
@@ -116,7 +117,7 @@ export function PlantForm() {
     }
   }
 
-  if (loading) return <div className="page-light screen-content">Loading…</div>
+  if (loading) return <Loading />
 
   return (
     <div className="page-light">

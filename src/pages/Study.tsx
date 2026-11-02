@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Loading } from '../components/Loading'
 import { PhotoCarousel } from '../components/PhotoCarousel'
 import { PronounceButton } from '../components/PronounceButton'
 import { TabBar } from '../components/TabBar'
@@ -59,7 +60,7 @@ export function Study() {
     })
   }, [plants, weekFilter, familyFilter, notQuizzedOnly, sortOrder])
 
-  if (loading) return <div className="page-light screen-content">Loading…</div>
+  if (loading) return <Loading />
   if (error)
     return (
       <div className="page-light screen-content">

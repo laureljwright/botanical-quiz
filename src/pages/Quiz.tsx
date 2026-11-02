@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Loading } from '../components/Loading'
 import { PhotoCarousel } from '../components/PhotoCarousel'
 import { ProgressHeader } from '../components/ProgressHeader'
 import { QuizAnswerField, type FieldStatus } from '../components/QuizAnswerField'
@@ -128,7 +129,7 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
     startRound(filterByWeekAndQuizzed(plants, week, notQuizzed), [])
   }
 
-  if (loading) return <div className="page-dark screen-content">Loading…</div>
+  if (loading) return <Loading />
   if (error)
     return (
       <div className="page-dark screen-content">

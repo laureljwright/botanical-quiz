@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { Loading } from './components/Loading'
 import { Login } from './pages/Login'
 import { PlantForm } from './pages/PlantForm'
 import { PlantList } from './pages/PlantList'
@@ -9,14 +10,14 @@ import { useSession } from './lib/useSession'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading } = useSession()
-  if (loading) return <div className="page">Loading…</div>
+  if (loading) return <Loading />
   if (!session) return <Navigate to="/login" replace />
   return <>{children}</>
 }
 
 function RedirectIfAuthed({ children }: { children: React.ReactNode }) {
   const { session, loading } = useSession()
-  if (loading) return <div className="page">Loading…</div>
+  if (loading) return <Loading />
   if (session) return <Navigate to="/quiz" replace />
   return <>{children}</>
 }

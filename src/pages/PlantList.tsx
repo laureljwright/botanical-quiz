@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Loading } from '../components/Loading'
 import { TabBar } from '../components/TabBar'
 import trashIcon from '../assets/figma/trash-icon.svg'
 import editIcon from '../assets/figma/edit-icon.svg'
@@ -45,7 +46,7 @@ export function PlantList() {
         </Link>
 
         {error && <div className="error-text">{error}</div>}
-        {loading && <p>Loading…</p>}
+        {loading && <Loading inline />}
 
         {!loading && plants.length === 0 && (
           <p style={{ opacity: 0.7 }}>No plants yet — tap "Add a Plant" to enter your first one.</p>

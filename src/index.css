@@ -1095,3 +1095,61 @@ textarea {
   letter-spacing: 0;
   text-transform: none;
 }
+
+/* --- Loading screen: the logo illustration, gently turning --- */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+}
+
+.loading-screen {
+  flex: 1;
+  min-height: 100vh;
+  gap: 24px;
+  background: var(--color-forest);
+  color: #fff;
+}
+
+.loading-inline {
+  gap: 12px;
+  padding: 32px 0;
+}
+
+.loading-icon {
+  width: 120px;
+  height: 120px;
+  animation: loading-spin 3s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+.loading-inline .loading-icon {
+  width: 64px;
+  height: 64px;
+}
+
+.loading-text {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-icon {
+    animation: loading-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes loading-pulse {
+    50% {
+      opacity: 0.55;
+    }
+  }
+}
