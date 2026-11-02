@@ -1,10 +1,14 @@
 export function ProgressHeader({
-  week,
+  done,
+  total,
   points,
   possiblePoints,
   streak,
 }: {
-  week: number
+  /** Plants worked through so far in the current set. */
+  done: number
+  /** Plants in the current set (after week / not-quizzed filters). */
+  total: number
   points: number
   possiblePoints: number
   streak: number
@@ -12,9 +16,12 @@ export function ProgressHeader({
   return (
     <div className="week-header-block">
       <div className="week-header">
-        Week {week} | {points}/{possiblePoints}
+        {done}/{total}
       </div>
-      {streak > 0 && <div className="streak-line">🔥 {streak} in a row</div>}
+      <div className="streak-line">
+        {possiblePoints > 0 ? `${points}/${possiblePoints} pts` : '0 pts'}
+        {streak > 0 && ` · 🔥 ${streak}`}
+      </div>
     </div>
   )
 }

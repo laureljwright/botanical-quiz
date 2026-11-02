@@ -72,6 +72,12 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
   const fields = mode === 'midterm' ? MIDTERM_FIELDS : PLANT_FIELDS
   const totalPoints = fields.reduce((sum, f) => sum + FIELD_POINTS[f], 0)
   const quizPlants = filterByWeekAndQuizzed(plants, filterValue, notQuizzedOnly)
+  // Position in the current pass through the set: the on-screen plant counts as
+  // done once graded, and skipped plants count as passed.
+  const done = Math.min(
+    quizPlants.length,
+    Math.max(0, quizPlants.length - remainingIds.length - 1 + (graded ? 1 : 0)),
+  )
   const weeks = Array.from(new Set(plants.map((p) => p.week_added))).sort((a, b) => a - b)
   // Options come from every plant (not the week filter), so narrowing to one
   // week doesn't shrink the list and give the answer away.
@@ -172,7 +178,8 @@ export function Quiz({ mode = 'full' }: { mode?: 'full' | 'midterm' }) {
       <div className="screen-content">
         <div className="quiz-top-row">
           <ProgressHeader
-            week={current.week_added}
+            done={done}
+            total={quizPlants.length}
             points={sessionPoints}
             possiblePoints={sessionTotal * totalPoints}
             streak={streak}
